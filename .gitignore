@@ -1,0 +1,57 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+.envrc
+*.egg-info/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Data & model outputs
+*.csv
+*.json
+*.log
+*.tsv
+*.xlsx
+*.db
+*.sqlite3
+outputs/
+*.sav
+*.pkl
+*.h5
+*.pt
+*.ckpt
+
+# LLM-generated artifacts
+*.tmp
+summaries_llm.json
+summaries_bert.json
+
+# OS / Editor specific
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Logs and reports
+*.log
+logs/
+*.out
+
+# Test cache
+.pytest_cache/
+.coverage
+
+# Build / Distribution
+dist/
+build/
+*.egg
+MANIFEST

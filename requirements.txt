@@ -1,0 +1,9 @@
+pandas
+scikit-learn
+sumy
+nltk
+spacy
+gensim
+sentence-transformers==2.2.2
+transformers==4.36.2
+tf-keras==0.5.0
