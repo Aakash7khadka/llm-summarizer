@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
+# from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
 from vectorization.vectorizers import vectorize_tfidf
 from models.trainers import train_model
 from evaluation.metrics import evaluate_model, plot_confusion_matrix

@@ -4,6 +4,14 @@ sumy
 nltk
 spacy
 gensim
-sentence-transformers==2.2.2
+sentence-transformers
 transformers==4.36.2
-tf-keras==0.5.0
+# tf-keras==2.19.0
+datasets
+seaborn
+gensim
+fastapi
+lime
+bert-extractive-summarizer
+shap
+uvicorn
