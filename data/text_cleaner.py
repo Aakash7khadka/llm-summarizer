@@ -1,21 +1,30 @@
 import re
+import spacy
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import nltk
+
 
 nltk.download('stopwords')
 
 stop_words = set(stopwords.words('english'))
 stemmer = PorterStemmer()
+nlp = spacy.load("en_core_web_sm")
 
 
-def clean_text(text: str) -> str:
+def clean_text_light(text: str) -> str:
     """
-    Basic text preprocessing:
-    - Lowercase
-    - Remove non-alphabetic characters
-    - Remove stopwords
-    - Apply stemming
+    Minimal cleaning for LLMs, BERT, or summarization.
+    Preserves sentence structure and stopwords.
+    """
+    text = str(text).strip().replace("\n", " ").lower()
+    return text
+
+
+def clean_text_strict(text: str) -> str:
+    """
+    Aggressive cleaning for traditional ML models (e.g., TF-IDF, SVM).
+    Removes punctuation, stopwords, and applies stemming.
     """
     text = str(text).lower()
     text = re.sub(r'\n', ' ', text)

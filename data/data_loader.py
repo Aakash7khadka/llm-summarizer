@@ -1,9 +1,12 @@
-import os
 import logging
 import pandas as pd
 from sklearn.datasets import fetch_20newsgroups
 from datasets import load_dataset
-from data.text_cleaner import clean_text
+from text_cleaner import clean_text_light, clean_text_strict
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 
 # Setup logging
 logging.basicConfig(level=logging.INFO,
@@ -11,9 +14,6 @@ logging.basicConfig(level=logging.INFO,
 
 
 def filter_dataframe(df: pd.DataFrame, text_column: str = 'text') -> pd.DataFrame:
-    """
-    Remove missing values, short texts, and duplicates.
-    """
     df = df.copy()
     df[text_column] = df[text_column].astype(str).str.strip()
     df = df[df[text_column].str.len() > 0]
@@ -22,49 +22,42 @@ def filter_dataframe(df: pd.DataFrame, text_column: str = 'text') -> pd.DataFram
     return df
 
 
-def load_and_clean_20newsgroups(save_path: str = 'data/cleaned_20news.csv') -> None:
-    """
-    Fetch, clean, and save the 20 Newsgroups dataset.
-    """
-    logging.info("📥 Loading 20 Newsgroups dataset...")
+def load_and_clean_20newsgroups(save_path='data/cleaned_20news.csv', cleaning_mode='strict'):
+    logging.info("Loading 20 Newsgroups dataset...")
     raw = fetch_20newsgroups(subset='all', remove=(
         'headers', 'footers', 'quotes'))
-
+    cleaner = clean_text_strict if cleaning_mode == 'strict' else clean_text_light
     df = pd.DataFrame({
-        'text': [clean_text(text) for text in raw.data],
+        'text': [cleaner(text) for text in raw.data],
         'label': raw.target,
         'label_name': [raw.target_names[i] for i in raw.target]
     })
-
     df = filter_dataframe(df)
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     df.to_csv(save_path, index=False)
-    logging.info(f"✅ Saved cleaned 20 Newsgroups to: {save_path}")
+    logging.info(f"Saved cleaned 20 Newsgroups to: {save_path}")
 
 
-def load_and_clean_agnews(save_path: str = 'data/cleaned_agnews.csv') -> None:
-    """
-    Fetch, clean, and save the AG News dataset.
-    """
-    logging.info("📥 Loading AG News dataset...")
+def load_and_clean_agnews(save_path='data/cleaned_agnews.csv', cleaning_mode='strict'):
+    logging.info("Loading AG News dataset...")
     dataset = load_dataset('ag_news', split='train')
-
-    texts = [clean_text(example['text']) for example in dataset]
+    cleaner = clean_text_strict if cleaning_mode == 'strict' else clean_text_light
+    texts = [cleaner(example['text']) for example in dataset]
     labels = [example['label'] for example in dataset]
     label_names = ['World', 'Sports', 'Business', 'Sci/Tech']
-
     df = pd.DataFrame({
         'text': texts,
         'label': labels,
         'label_name': [label_names[i] for i in labels]
     })
-
     df = filter_dataframe(df)
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     df.to_csv(save_path, index=False)
-    logging.info(f"✅ Saved cleaned AG News to: {save_path}")
+    logging.info(f"Saved cleaned AG News to: {save_path}")
 
 
 if __name__ == "__main__":
-    load_and_clean_20newsgroups()
-    load_and_clean_agnews()
+    load_and_clean_20newsgroups('data/cleaned_20news_strict.csv', 'strict')
+    load_and_clean_agnews('data/cleaned_agnews_strict.csv', 'strict')
+    load_and_clean_20newsgroups('data/cleaned_20news_light.csv', 'light')
+    load_and_clean_agnews('data/cleaned_agnews_light.csv', 'light')
