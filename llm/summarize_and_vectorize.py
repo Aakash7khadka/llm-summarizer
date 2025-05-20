@@ -1,4 +1,4 @@
-from llm.bert_summarizer import generate_bert_summary
+from llm.lsa_summarizer import generate_lsa_summary
 from llm.ollama_client import generate_llm_summary
 from sentence_transformers import SentenceTransformer
 
@@ -30,7 +30,7 @@ def summarize_and_vectorize(text: str) -> dict:
         }
 
     # Generate summaries
-    bert_summary = generate_bert_summary(text)
+    bert_summary = generate_lsa_summary(text)
     llm_summary = generate_llm_summary(text)
 
     # Embed summaries

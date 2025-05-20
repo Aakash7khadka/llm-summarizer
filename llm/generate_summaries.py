@@ -1,10 +1,11 @@
 import logging
 import json
+import random
 import pandas as pd
 from tqdm import tqdm
 from typing import Optional
-from llm.ollama_client import generate_llm_summary
-from llm.bert_summarizer import generate_bert_summary
+from ollama_client import generate_llm_summary
+from lsa_summarizer import generate_lsa_summary
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s | %(levelname)s | %(message)s')
@@ -14,17 +15,24 @@ def clean_llm_output(text: str) -> str:
     """
     Remove filler phrases (e.g., "Sure! Here's...") from LLM-generated summaries.
     """
-    if text.lower().startswith("sure"):
+    lower_text = text.lower()
+    if lower_text.startswith("sure") or lower_text.startswith("okay") or lower_text.startswith("here"):
         split_index = text.find("\n\n")
         if split_index != -1:
-            return text[split_index:].strip()
+            text = text[split_index:].strip()
+
+    search_strings = ["\n\nlet me know", "\n\nwould you like me to", "\n\n---\n\n", "\n\n**"]
+    for search_string in search_strings:
+        split_index = lower_text.find(search_string)
+        if split_index != -1:
+            return text[:split_index].strip()
     return text.strip()
 
 
 def generate_and_save_summaries(
     input_csv: str,
     llm_json: str,
-    bert_json: str,
+    lsa_json: str,
     text_column: str = "text",
     limit: Optional[int] = None
 ) -> None:
@@ -36,47 +44,49 @@ def generate_and_save_summaries(
     if limit:
         df = df.head(limit)
 
-    llm_summaries, bert_summaries = {}, {}
+    llm_summaries, lsa_summaries = {}, {}
 
+    
     logging.info("🧠 Generating summaries...")
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         doc_id = str(idx)
         text = str(row.get(text_column, "")).strip()
-
         if not text or len(text.split()) < 10:
             continue  # skip short/empty inputs
 
         # LLM summary
         try:
-            llm_raw = generate_llm_summary(text)
+            llm_raw = generate_llm_summary(text, doc_id=doc_id)
             llm_summary = clean_llm_output(llm_raw)
             if llm_summary:
                 llm_summaries[doc_id] = llm_summary
         except Exception as e:
             logging.warning(f"[LLM failed] ID={doc_id} | {e}")
 
-        # BERT summary
+        # LSA summary
         try:
-            bert_summary = generate_bert_summary(text)
-            if bert_summary and len(bert_summary.strip()) > 10:
-                bert_summaries[doc_id] = bert_summary.strip()
+            lsa_summary = generate_lsa_summary(text)
+            if lsa_summary and len(lsa_summary.strip()) > 10:
+                lsa_summaries[doc_id] = lsa_summary.strip()
         except Exception as e:
-            logging.warning(f"[BERT failed] ID={doc_id} | {e}")
+            logging.warning(f"[LSA failed] ID={doc_id} | {e}")
 
-    # Save JSON files
-    with open(llm_json, 'w', encoding='utf-8') as f:
-        json.dump(llm_summaries, f, ensure_ascii=False, indent=2)
-    with open(bert_json, 'w', encoding='utf-8') as f:
-        json.dump(bert_summaries, f, ensure_ascii=False, indent=2)
+        # Save JSON files
+        with open(llm_json, 'w', encoding='utf-8') as f:
+            json.dump(llm_summaries, f, ensure_ascii=False, indent=2)
+        with open(lsa_json, 'w', encoding='utf-8') as f:
+            json.dump(lsa_summaries, f, ensure_ascii=False, indent=2)
 
     logging.info(f"✅ Saved {len(llm_summaries)} LLM summaries → {llm_json}")
-    logging.info(f"✅ Saved {len(bert_summaries)} BERT summaries → {bert_json}")
+    logging.info(f"✅ Saved {len(lsa_summaries)} LSA summaries → {lsa_json}")
 
 
 if __name__ == "__main__":
     generate_and_save_summaries(
-        input_csv="data/cleaned_20news.csv",
-        llm_json="data/summaries_llm.json",
-        bert_json="data/summaries_bert.json",
-        limit=200  # Set to None to process all
-    )
+        input_csv="data/cleaned_20news_light.csv",
+        llm_json="data/summaries_20news_llm.json",
+        lsa_json="data/summaries_20news_lsa.json")
+    generate_and_save_summaries(
+        input_csv="data/cleaned_agnews_light.csv",
+        llm_json="data/summaries_agnews_llm.json",
+        lsa_json="data/summaries_agnews_lsa.json")

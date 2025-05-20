@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List
 
 from data.text_cleaner import clean_text
-from llm.bert_summarizer import generate_bert_summary
+from llm.lsa_summarizer import generate_lsa_summary
 from llm.ollama_client import generate_llm_summary
 from vectorization.vectorizers import vectorize_tfidf, vectorize_bert
 from llm.summarize_and_vectorize import summarize_and_vectorize
@@ -37,7 +37,7 @@ def preprocess_text(request: TextRequest):
 # --- Summarization ---
 @app.post("/summarize/bert")
 def summarize_bert(request: TextRequest):
-    summary = generate_bert_summary(request.text)
+    summary = generate_lsa_summary(request.text)
     if not summary:
         raise HTTPException(
             status_code=400, detail="BERT summarization failed.")

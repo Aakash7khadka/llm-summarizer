@@ -1,5 +1,5 @@
 import logging
-from llm.bert_summarizer import generate_bert_summary
+from llm.lsa_summarizer import generate_lsa_summary
 
 logging.basicConfig(level=logging.INFO)
 
@@ -10,7 +10,7 @@ def test_bert_summary():
     indicating a slowdown in consumer prices. Major indexes rose more than 2%,
     marking the best day in weeks for Wall Street.
     """
-    summary = generate_bert_summary(text, num_sentences=3)
+    summary = generate_lsa_summary(text, num_sentences=3)
     logging.info(f"Generated summary:\n{summary}")
 
 

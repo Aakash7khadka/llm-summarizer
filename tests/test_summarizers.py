@@ -1,4 +1,4 @@
-from llm.bert_summarizer import generate_bert_summary
+from llm.lsa_summarizer import generate_lsa_summary
 from llm.ollama_client import generate_llm_summary
 
 sample_text = (
@@ -9,7 +9,7 @@ sample_text = (
 
 
 def test_bert_summary():
-    summary = generate_bert_summary(sample_text)
+    summary = generate_lsa_summary(sample_text)
     assert isinstance(summary, str)
     assert len(summary.split()) > 3
 
