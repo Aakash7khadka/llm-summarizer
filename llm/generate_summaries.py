@@ -1,6 +1,7 @@
 import logging
 import json
 import random
+from math import floor
 import pandas as pd
 from tqdm import tqdm
 from typing import Optional
@@ -28,13 +29,17 @@ def clean_llm_output(text: str) -> str:
             return text[:split_index].strip()
     return text.strip()
 
+def generate_fixed_random_list(seed, count, start, end):
+    random.seed(seed)
+    return [random.randint(start, end) for _ in range(count)]
 
 def generate_and_save_summaries(
     input_csv: str,
     llm_json: str,
     lsa_json: str,
     text_column: str = "text",
-    limit: Optional[int] = None
+    limit: Optional[int] = None,
+    batch_no: Optional[int] = None
 ) -> None:
     """
     Generate LLM and BERT summaries from a CSV file and save them to JSON files.
@@ -46,7 +51,14 @@ def generate_and_save_summaries(
 
     llm_summaries, lsa_summaries = {}, {}
 
-    
+
+    if batch_no > 4:
+        logging.warning(f"[Batch no. failed] batch_no should be <= 4, but got {batch_no}.")
+    else:
+        start = (len(df)/5) *batch_no
+        end = (len(df)/5) * (batch_no + 1)
+        idx_list = generate_fixed_random_list(1276672,2000, int(start), floor(end))
+        df = df.iloc[idx_list]
     logging.info("🧠 Generating summaries...")
     for idx, row in tqdm(df.iterrows(), total=len(df)):
         doc_id = str(idx)
@@ -82,11 +94,15 @@ def generate_and_save_summaries(
 
 
 if __name__ == "__main__":
-    generate_and_save_summaries(
-        input_csv="data/cleaned_20news_light.csv",
-        llm_json="data/summaries_20news_llm.json",
-        lsa_json="data/summaries_20news_lsa.json")
+    # Add your batch number here
+    # Amr: batch_no = 0
+    # Pedram: batch_no = 1
+    # Karthi: batch_no = 2
+    # Aakash: batch_no = 3
+    # Max: batch_no = 4
+    batch_no = 0
     generate_and_save_summaries(
         input_csv="data/cleaned_agnews_light.csv",
-        llm_json="data/summaries_agnews_llm.json",
-        lsa_json="data/summaries_agnews_lsa.json")
+        llm_json=f"data/summaries_agnews_llm_batch{batch_no}.json",
+        lsa_json=f"data/summaries_agnews_lsa_batch{batch_no}.json",
+        batch_no=batch_no)
