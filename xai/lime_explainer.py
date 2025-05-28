@@ -50,21 +50,22 @@ def explain_prediction_lime(text: str, model, vectorizer, class_names: list, num
 
         predicted_class = pipeline.predict([text])[0]
         logging.info(f"Predicted class:{predicted_class}({class_list[predicted_class]})")
+        predicted_class_name = class_list[predicted_class]
 
         logging.info("✅ LIME explanation generated.")
         # prompt_for_ollamaprediction(explanation.as_list())
-        return explanation.as_list(), predicted_class
+        return explanation.as_list(), predicted_class, predicted_class_name
 
     except Exception as e:
         logging.error(f"LIME explanation failed: {e}")
         return []
 
 
-def explain_classification_decision(text, predicted_class_index):
-    class_list = ["alt.atheism", " comp.graphics", " comp.os.ms-windows.misc", " comp.sys.ibm.pc.hardware", " comp.sys.mac.hardware", " comp.windows.x", " misc.forsale", " rec.autos", " rec.motorcycles", " rec.sport.baseball", " rec.sport.hockey", " sci.crypt", " sci.electronics", " sci.med", " sci.space", " soc.religion.christian", " talk.politics.guns", " talk.politics.mideast", " talk.politics.misc", " talk.religion.misc"]
-    predicted_class = class_list[predicted_class_index]
+def explain_classification_decision(text, predicted_class_index, predicted_class_name):
+    # class_list = ["alt.atheism", " comp.graphics", " comp.os.ms-windows.misc", " comp.sys.ibm.pc.hardware", " comp.sys.mac.hardware", " comp.windows.x", " misc.forsale", " rec.autos", " rec.motorcycles", " rec.sport.baseball", " rec.sport.hockey", " sci.crypt", " sci.electronics", " sci.med", " sci.space", " soc.religion.christian", " talk.politics.guns", " talk.politics.mideast", " talk.politics.misc", " talk.religion.misc"]
+    # predicted_class = class_list[predicted_class_index]
     prompt = """
-            Following text has been classified as """ +predicted_class+ """
+            Following text has been classified as """ +predicted_class_name+ """
             among the following class labels:
             - alt.atheism
             - comp.graphics
@@ -107,57 +108,63 @@ def explain_classification_decision(text, predicted_class_index):
     return resp
 
 
-def ollamaprediction_comparison_limeexplanation(text, ollama_explanation, explanation_list):
+def ollamaprediction_comparison_limeexplanation(text, ollama_explanation, explanation_list, predicted_class_name):
     # Convert LIME explanation to readable format
     readable_expl = "\n".join([f"- {word}: {score:.4f}" for word, score in explanation_list])
 
-    # Category list to give context
-    categories = """
-    List of valid categories:
-    - alt.atheism
-    - comp.graphics
-    - comp.os.ms-windows.misc
-    - comp.sys.ibm.pc.hardware
-    - comp.sys.mac.hardware
-    - comp.windows.x
-    - misc.forsale
-    - rec.autos
-    - rec.motorcycles
-    - rec.sport.baseball
-    - rec.sport.hockey
-    - sci.crypt
-    - sci.electronics
-    - sci.med
-    - sci.space
-    - soc.religion.christian
-    - talk.politics.guns
-    - talk.politics.mideast
-    - talk.politics.misc
-    - talk.religion.misc
-    """
+    categories = [
+    "alt.atheism", "comp.graphics", "comp.os.ms-windows.misc", "comp.sys.ibm.pc.hardware",
+    "comp.sys.mac.hardware", "comp.windows.x", "misc.forsale", "rec.autos",
+    "rec.motorcycles", "rec.sport.baseball", "rec.sport.hockey", "sci.crypt",
+    "sci.electronics", "sci.med", "sci.space", "soc.religion.christian",
+    "talk.politics.guns", "talk.politics.mideast", "talk.politics.misc", "talk.religion.misc"
+]
+    valid_list = "\\n".join(f"- {c}" for c in categories)
 
     lime_prompt = f"""
-You are analyzing a classification decision made for a document from the 20 Newsgroups dataset.
+    You are a classification analyst for 20-Newsgroups data.
 
-Step 1: Input Text:
-\"\"\"{text}\"\"\"
+    You are given:
+    - Stemmed text
+    - The category predicted by a ML model for the text
+    - The original LLM explanation for the prediction for the text input
+    - A LIME explanation showing important words and their contribution
 
-Step 2: Your previous LLM explanation and predicted category:
-\"\"\"{ollama_explanation}\"\"\"
+    ---
+    **Text:** {text}
 
-Step 3: Now, here is a LIME explanation of the model’s decision. It shows how each word influenced the prediction (positive: supports the category, negative: opposes it):
+    **Predicted category:** {predicted_class_name}
 
-LIME Explanation:
-{readable_expl}
+    **Original LLM explanation:**  
+    \"\"\"{ollama_explanation}\"\"\"
 
-{categories}
+    
 
-Now answer briefly:
-1. Does the LIME explanation support, contradict, or refine your earlier explanation?
-2. Mention 1–2 specific words from the LIME output and explain their role.
-3. Would you change your original predicted category or explanation? Yes or No — and why.
-(Only pick from the category list above.)
-"""
+    **LIME word importance:**
+    {readable_expl}
+
+    ---
+
+        Your task is to answer the following **question**, using **only this format**:
+
+        **Does the LIME explanation support, or contradict the Original LLM explanation?**  
+        (Choose exactly one: **support** or **contradict**)
+
+        - If your answer is **support**, explain briefly why.
+        - If your answer is **contradict**, explain briefly why, and you **must suggest a new category** from the allowed list below.
+
+        **⚠️ You must always suggest a new category if you answer "contradict".**
+
+        **Allowed categories only:**  
+        {valid_list}
+
+        ---
+
+        💡 Your answers must be logically consistent.
+        - You must not invent a category outside the list.
+        - You must follow the required format exactly.
+    """
+
 
     response = requests.post(
         'http://localhost:11434/api/generate',

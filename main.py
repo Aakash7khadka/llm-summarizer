@@ -77,10 +77,10 @@ def summarize_and_vectorize_endpoint(request: TextRequest):
 @app.post("/xai/lime")
 def explain_with_lime(request: TextRequest):
     model, vectorizer, class_names = load_saved_model()
-    explanation, predicted_class = explain_prediction_lime(
+    explanation, predicted_class, predicted_class_name = explain_prediction_lime(
         request.text, model, vectorizer, class_names, 10000)
-    llm_reasoning = explain_classification_decision(request.text, predicted_class)
-    ollamaprediction_comparison_limeexplanation(request.text, llm_reasoning, explanation)
+    llm_reasoning = explain_classification_decision(request.text, predicted_class, predicted_class_name)
+    ollamaprediction_comparison_limeexplanation(request.text, llm_reasoning, explanation, predicted_class_name)
     return {"lime_explanation": explanation}
 
 
