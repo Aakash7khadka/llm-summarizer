@@ -35,13 +35,13 @@ def preprocess_text(request: TextRequest):
 
 
 # --- Summarization ---
-@app.post("/summarize/bert")
-def summarize_bert(request: TextRequest):
+@app.post("/summarize/lsa")
+def summarize_lsa(request: TextRequest):
     summary = generate_lsa_summary(request.text)
     if not summary:
         raise HTTPException(
-            status_code=400, detail="BERT summarization failed.")
-    return {"bert_summary": summary}
+            status_code=400, detail="LSA summarization failed.")
+    return {"lsa_summary": summary}
 
 
 @app.post("/summarize/llm")

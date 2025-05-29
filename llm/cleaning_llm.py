@@ -5,9 +5,9 @@ from ollama_client import generate_llm_summary
 from generate_summaries import clean_llm_output
 import matplotlib.pyplot as plt
 
-llm_json = 'data/summaries_20news_llm_2.json'
+llm_json = 'data/summaries_agnews_lsa.json'
 
-llm_write_json = 'data/summaries_20news_llm_2.json'
+llm_write_json = 'data/summaries_agnews_llm_2.json'
 
 # df_idx = "15373 13842 10072 8406 6714 6361 2080 437 62"
 # df_idx_empty = ['184', '508', '816', '4749', '4860', '7341', '10024', '10337', '12704', '13204', '14224', '15046', '15106', '15656', '15969']
@@ -20,8 +20,16 @@ llm_write_json = 'data/summaries_20news_llm_2.json'
 with open(llm_json, 'r', encoding="utf-8") as file:
     llm_summaries = json.load(file)
 
+temp_llm_summaries = llm_summaries.copy()
+count_deleted_summaries = 0
+for key, val in temp_llm_summaries.items():
+    if len(val.split()) > 59.5:
+        del llm_summaries[key]
+        count_deleted_summaries += 1
 
-# Create histogram
+print(count_deleted_summaries)
+
+# # Create histogram
 # llm_summaries_list = list(llm_summaries.values())
 # llm_summaries_lens = [len(summary.split()) for summary in llm_summaries_list]
 # counts, bin_edges, _ = plt.hist(llm_summaries_lens, bins=100, edgecolor='black')
@@ -80,6 +88,6 @@ for doc_id, text in tqdm(iter_summary_dict, total=len(iter_summary_dict)):
 
 print(f"Deleted {len(deleted_ids)} summaries.")
 print(deleted_ids)
-
-with open(llm_write_json, 'w', encoding='utf-8') as f:
-    json.dump(llm_summaries, f, ensure_ascii=False, indent=2)
+print(f"length of llm_summaries: {len(llm_summaries)}")
+# with open(llm_write_json, 'w', encoding='utf-8') as f:
+#     json.dump(llm_summaries, f, ensure_ascii=False, indent=2)

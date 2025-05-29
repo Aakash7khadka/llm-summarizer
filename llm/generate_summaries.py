@@ -8,6 +8,9 @@ from typing import Optional
 from ollama_client import generate_llm_summary
 from lsa_summarizer import generate_lsa_summary
 
+import nltk
+nltk.download('punkt_tab')
+
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s | %(levelname)s | %(message)s')
 
@@ -93,6 +96,82 @@ def generate_and_save_summaries(
     logging.info(f"✅ Saved {len(lsa_summaries)} LSA summaries → {lsa_json}")
 
 
+import concurrent.futures
+from functools import partial
+
+def generate_and_save_summaries_faster(
+    input_csv: str,
+    llm_json: str,
+    lsa_json: str,
+    text_column: str = "text",
+    max_workers: int = 32
+) -> None:
+    """
+    Generate LLM and BERT summaries from a CSV file using multithreading.
+    """
+    logging.info(f"📥 Loading: {input_csv}")
+    df = pd.read_csv(input_csv)
+    llm_summaries, lsa_summaries = {}, {}
+
+    # Worker function that processes a single row
+    def process_row(row, idx):
+        doc_id = str(idx)
+        text = str(row.get(text_column, "")).strip()
+        results = {}
+        
+        if not text or len(text.split()) < 10:
+            return results  # skip short/empty inputs
+
+        # LLM summary
+        try:
+            llm_raw = generate_llm_summary(text, doc_id=doc_id)
+            llm_summary = clean_llm_output(llm_raw)
+            if llm_summary:
+                results['llm'] = (doc_id, llm_summary)
+        except Exception as e:
+            logging.warning(f"[LLM failed] ID={doc_id} | {e}")
+
+        # LSA summary
+        try:
+            lsa_summary = generate_lsa_summary(text)
+            if lsa_summary and len(lsa_summary.strip()) > 10:
+                results['lsa'] = (doc_id, lsa_summary.strip())
+        except Exception as e:
+            logging.warning(f"[LSA failed] ID={doc_id} | {e}")
+            
+        return results
+
+    # Process rows in parallel
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for idx, row in tqdm(df.iterrows(), total=len(df)):
+            futures.append(executor.submit(process_row, row, idx))
+            
+        for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures)):
+            results = future.result()
+            if 'llm' in results:
+                doc_id, summary = results['llm']
+                llm_summaries[doc_id] = summary
+            if 'lsa' in results:
+                doc_id, summary = results['lsa']
+                lsa_summaries[doc_id] = summary
+            
+            # Periodic saving (every 10 processed items)
+            if len(llm_summaries) % 10 == 0 or len(lsa_summaries) % 10 == 0:
+                with open(llm_json, 'w', encoding='utf-8') as f:
+                    json.dump(llm_summaries, f, ensure_ascii=False, indent=2)
+                with open(lsa_json, 'w', encoding='utf-8') as f:
+                    json.dump(lsa_summaries, f, ensure_ascii=False, indent=2)
+
+    # Final save
+    with open(llm_json, 'w', encoding='utf-8') as f:
+        json.dump(llm_summaries, f, ensure_ascii=False, indent=2)
+    with open(lsa_json, 'w', encoding='utf-8') as f:
+        json.dump(lsa_summaries, f, ensure_ascii=False, indent=2)
+
+    # logging.info(f"✅ Saved {len(llm_summaries)} LLM summaries → {llm_json}")
+    logging.info(f"✅ Saved {len(lsa_summaries)} LSA summaries → {lsa_json}")
+
 if __name__ == "__main__":
     # Add your batch number here
     # Amr: batch_no = 0
@@ -100,9 +179,7 @@ if __name__ == "__main__":
     # Karthi: batch_no = 2
     # Aakash: batch_no = 3
     # Max: batch_no = 4
-    batch_no = 0
-    generate_and_save_summaries(
+    generate_and_save_summaries_faster(
         input_csv="data/cleaned_agnews_light.csv",
-        llm_json=f"data/summaries_agnews_llm_batch{batch_no}.json",
-        lsa_json=f"data/summaries_agnews_lsa_batch{batch_no}.json",
-        batch_no=batch_no)
+        llm_json=f"data/summaries_agnews_llm.json",
+        lsa_json=f"data/summaries_agnews_lsa.json")
