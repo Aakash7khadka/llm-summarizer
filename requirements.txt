@@ -15,3 +15,5 @@ lime
 bert-extractive-summarizer
 shap
 uvicorn
+matplotlib
+collections
