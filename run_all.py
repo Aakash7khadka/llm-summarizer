@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from vectorization.vectorizers import vectorize_tfidf
 from models.trainers import train_model
 from evaluation.metrics import evaluate_model, plot_confusion_matrix
+from models.training import training_process
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s | %(levelname)s | %(message)s')
@@ -25,6 +26,9 @@ def main():
     # Vectorize with TF-IDF
     X_train_vecs, vectorizer = vectorize_tfidf(X_train_texts)
     X_test_vecs = vectorizer.transform(X_test_texts)
+
+    #train and evaluate models
+    #training_process (None)
 
     # Train and evaluate models
     model_types = ["svm", "mlp", "rf"]
