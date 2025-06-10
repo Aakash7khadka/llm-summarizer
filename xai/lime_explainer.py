@@ -108,7 +108,7 @@ def explain_classification_decision(text, predicted_class_index, predicted_class
     return resp
 
 
-def ollamaprediction_comparison_limeexplanation(text, ollama_explanation, explanation_list, predicted_class_name):
+def ollamaprediction_comparison_with_limeexplanation(text, ollama_explanation, explanation_list, predicted_class_name):
     # Convert LIME explanation to readable format
     readable_expl = "\n".join([f"- {word}: {score:.4f}" for word, score in explanation_list])
 

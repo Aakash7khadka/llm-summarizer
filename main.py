@@ -7,7 +7,8 @@ from llm.bert_summarizer import generate_bert_summary
 from llm.ollama_client import generate_llm_summary
 from vectorization.vectorizers import vectorize_tfidf, vectorize_bert
 from llm.summarize_and_vectorize import summarize_and_vectorize
-from xai.lime_explainer import explain_prediction_lime, explain_classification_decision, ollamaprediction_comparison_limeexplanation
+from xai.lime_explainer import explain_prediction_lime, explain_classification_decision, ollamaprediction_comparison_with_limeexplanation
+
 from xai.shap_explainer import explain_prediction_shap
 from models.trainers import load_saved_model
 
@@ -80,7 +81,7 @@ def explain_with_lime(request: TextRequest):
     explanation, predicted_class, predicted_class_name = explain_prediction_lime(
         request.text, model, vectorizer, class_names, 10000)
     llm_reasoning = explain_classification_decision(request.text, predicted_class, predicted_class_name)
-    ollamaprediction_comparison_limeexplanation(request.text, llm_reasoning, explanation, predicted_class_name)
+    ollamaprediction_comparison_with_limeexplanation(request.text, llm_reasoning, explanation, predicted_class_name)
     return {"lime_explanation": explanation}
 
 
