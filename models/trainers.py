@@ -79,7 +79,7 @@ def load_saved_model(model_path="models/final_model.joblib", vectorizer_path="mo
     vectorizer = joblib.load(vectorizer_path)
 
     # NOTE: Change this based on your dataset
-    class_names = ['World', 'Sports', 'Business', 'Sci/Tech']
+    class_names = ["alt.atheism", " comp.graphics", " comp.os.ms-windows.misc", " comp.sys.ibm.pc.hardware", " comp.sys.mac.hardware", " comp.windows.x", " misc.forsale", " rec.autos", " rec.motorcycles", " rec.sport.baseball", " rec.sport.hockey", " sci.crypt", " sci.electronics", " sci.med", " sci.space", " soc.religion.christian", " talk.politics.guns", " talk.politics.mideast", " talk.politics.misc", " talk.religion.misc"]
 
     logging.info("📂 Loaded model and vectorizer from disk")
     return model, vectorizer, class_names

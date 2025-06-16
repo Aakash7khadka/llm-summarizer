@@ -7,7 +7,7 @@ from llm.bert_summarizer import generate_bert_summary
 from llm.ollama_client import generate_llm_summary
 from vectorization.vectorizers import vectorize_tfidf, vectorize_bert
 from llm.summarize_and_vectorize import summarize_and_vectorize
-from xai.lime_explainer import explain_prediction_lime, explain_classification_decision, ollamaprediction_comparison_with_limeexplanation
+from xai.lime_explainer import explain_prediction_lime, explain_classification_decision_with_ollama, ollamaprediction_comparison_with_limeexplanation
 
 from xai.shap_explainer import explain_prediction_shap
 from models.trainers import load_saved_model
@@ -80,15 +80,15 @@ def explain_with_lime(request: TextRequest):
     model, vectorizer, class_names = load_saved_model()
     explanation, predicted_class, predicted_class_name = explain_prediction_lime(
         request.text, model, vectorizer, class_names, 10000)
-    llm_reasoning = explain_classification_decision(request.text, predicted_class, predicted_class_name)
+    llm_reasoning = explain_classification_decision_with_ollama(request.text, predicted_class, predicted_class_name)
     ollamaprediction_comparison_with_limeexplanation(request.text, llm_reasoning, explanation, predicted_class_name)
     return {"lime_explanation": explanation}
 
 
 @app.post("/xai/shap")
 def explain_with_shap(request: TextRequest):
-    model, vectorizer, _ = load_saved_model()
-    shap_values = explain_prediction_shap([request.text], model, vectorizer)
+    model, vectorizer, class_names = load_saved_model()
+    shap_values,a , b = explain_prediction_shap([request.text], model, vectorizer, class_names, 10000)
     if shap_values is None:
         raise HTTPException(status_code=500, detail="SHAP explanation failed.")
     return {

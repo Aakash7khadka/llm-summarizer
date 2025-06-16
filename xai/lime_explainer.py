@@ -7,6 +7,7 @@ from sklearn.pipeline import make_pipeline
 import requests
 
 
+
 def explain_prediction_lime(text, model, vectorizer, class_names):
     """
     Generate a LIME explanation for a single prediction.
@@ -37,7 +38,7 @@ def explain_prediction_lime(text: str, model, vectorizer, class_names: list, num
         list: List of (word, weight) tuples showing contribution to prediction.
     """
 
-    class_list = ["alt.atheism", " comp.graphics", " comp.os.ms-windows.misc", " comp.sys.ibm.pc.hardware", " comp.sys.mac.hardware", " comp.windows.x", " misc.forsale", " rec.autos", " rec.motorcycles", " rec.sport.baseball", " rec.sport.hockey", " sci.crypt", " sci.electronics", " sci.med", " sci.space", " soc.religion.christian", " talk.politics.guns", " talk.politics.mideast", " talk.politics.misc", " talk.religion.misc"]
+    
     try:
         pipeline = make_pipeline(vectorizer, model)
         explainer = LimeTextExplainer(class_names=class_names)
@@ -49,8 +50,8 @@ def explain_prediction_lime(text: str, model, vectorizer, class_names: list, num
         )
 
         predicted_class = pipeline.predict([text])[0]
-        logging.info(f"Predicted class:{predicted_class}({class_list[predicted_class]})")
-        predicted_class_name = class_list[predicted_class]
+        logging.info(f"Predicted class:{predicted_class}({class_names[predicted_class]})")
+        predicted_class_name = class_names[predicted_class]
 
         logging.info("✅ LIME explanation generated.")
         # prompt_for_ollamaprediction(explanation.as_list())
@@ -61,7 +62,8 @@ def explain_prediction_lime(text: str, model, vectorizer, class_names: list, num
         return []
 
 
-def explain_classification_decision(text, predicted_class_index, predicted_class_name):
+
+def explain_classification_decision_with_ollama(text, predicted_class_index, predicted_class_name):
     # class_list = ["alt.atheism", " comp.graphics", " comp.os.ms-windows.misc", " comp.sys.ibm.pc.hardware", " comp.sys.mac.hardware", " comp.windows.x", " misc.forsale", " rec.autos", " rec.motorcycles", " rec.sport.baseball", " rec.sport.hockey", " sci.crypt", " sci.electronics", " sci.med", " sci.space", " soc.religion.christian", " talk.politics.guns", " talk.politics.mideast", " talk.politics.misc", " talk.religion.misc"]
     # predicted_class = class_list[predicted_class_index]
     prompt = """
@@ -104,6 +106,7 @@ def explain_classification_decision(text, predicted_class_index, predicted_class
     # Print the generated response
 
     resp = response.json()["response"]
+    logging.info("Ollama Explanation about classification:")
     logging.info(response.json()["response"])   
     return resp
 
@@ -175,6 +178,6 @@ def ollamaprediction_comparison_with_limeexplanation(text, ollama_explanation, e
             "temperature": 0.2
         }
     )
-
+    logging.info("Ollama explanation with LIME values and its own classification decision:")
     logging.info(response.json()["response"])
     return response.json()["response"]
