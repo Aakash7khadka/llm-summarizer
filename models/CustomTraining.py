@@ -25,6 +25,7 @@ class CustomTraining:
         '''
         @abstract:  create the runs for each classifier and vector representation
         '''
+        if self.classifiers == None: return
         for classifier in self.classifiers:
             for vector_representation in self.train_test_data:
                 run = Run (
@@ -40,11 +41,12 @@ class CustomTraining:
         '''
         @abstract:  train the classifiers on the given vector representations
         '''
-        for run in self.runs:
+        for i, run in enumerate (self.runs):
             if debug: print (f"Training Classifier: {run.classifier}")
             run.classifier.fit (run.X_train, run.y_train)
 
-        save_model (run.classifier)
+            save_model (run.classifier, model_path=f"models/final_model_{i}.joblib")
+            print (f"saved model as: models/final_model_{i}.joblib")
 
     def test (self, debug = True):
         '''
@@ -95,17 +97,18 @@ class CustomTraining:
                 bars = plt.bar (positions, values, width=bar_width, label=metric_name.capitalize ())
 
                 for bar in bars:
-                    height = bar.get_height ()
-                    plt.text (
-                        bar.get_x () + bar.get_width () / 2,
+                    height = bar.get_height()
+                    plt.text(
+                        bar.get_x() + bar.get_width() / 2,
                         height + 0.01,
                         f"{height:.4f}",
                         ha='center',
                         va='bottom',
-                        fontsize=9
+                        fontsize=9,
+                        rotation=90 
                     )
 
-            plt.title (f"Performance Metrics per Run — {classifier_name}")
+            plt.title (f"Performance Metrics per Run â€” {classifier_name}")
             plt.xlabel ("Vector Representation Index")
             plt.ylabel ("Score")
             plt.ylim (0.0, 1.1)
