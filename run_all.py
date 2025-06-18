@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 # from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
 from vectorization.vectorizers import vectorize_tfidf
-from models.trainers import train_model
+from models.trainers import train_model, save_model
 from evaluation.metrics import evaluate_model, plot_confusion_matrix
 
 logging.basicConfig(level=logging.INFO,
@@ -27,12 +27,14 @@ def main():
     X_test_vecs = vectorizer.transform(X_test_texts)
 
     # Train and evaluate models
-    model_types = ["svm", "mlp", "rf"]
+    model_types = ["svm"]
     for model_type in model_types:
         logging.info(f"🔧 Training model: {model_type.upper()}")
 
         model = train_model(X_train_vecs, y_train, model_type=model_type)
         y_pred = model.predict(X_test_vecs)
+
+        save_model(model, vectorizer)
 
         metrics = evaluate_model(y_test, y_pred)
         logging.info(f"📊 {model_type.upper()} metrics: {metrics}")
