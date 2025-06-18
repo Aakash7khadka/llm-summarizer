@@ -1,15 +1,17 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
+import logging
+import requests
+import json
 
-from data.text_cleaner import clean_text
 from llm.lsa_summarizer import generate_lsa_summary
 from llm.ollama_client import generate_llm_summary
 from vectorization.vectorizers import vectorize_tfidf, vectorize_bert
 from llm.summarize_and_vectorize import summarize_and_vectorize
 from xai.lime_explainer import explain_prediction_lime, explain_classification_decision_with_ollama, ollamaprediction_comparison_with_limeexplanation
 
-from xai.shap_explainer import explain_prediction_shap
+# from xai.shap_explainer import explain_prediction_shap
 from models.trainers import load_saved_model
 
 app = FastAPI(
@@ -84,15 +86,40 @@ def explain_with_lime(request: TextRequest):
     ollamaprediction_comparison_with_limeexplanation(request.text, llm_reasoning, explanation, predicted_class_name)
     return {"lime_explanation": explanation}
 
+class RequestData(BaseModel):
+    line_id: str 
+    useSummaryAlso: bool
 
-@app.post("/xai/shap")
-def explain_with_shap(request: TextRequest):
-    model, vectorizer, class_names = load_saved_model()
-    shap_values,a , b = explain_prediction_shap([request.text], model, vectorizer, class_names, 10000)
-    if shap_values is None:
-        raise HTTPException(status_code=500, detail="SHAP explanation failed.")
-    return {
-        "shap_values": shap_values.values.tolist(),
-        "base_values": shap_values.base_values.tolist(),
-        "data": shap_values.data.tolist()
-    }
+
+@app.post("/xai/lime_custom")
+def explain_with_lime_with_file_and_linenumber(request: RequestData):
+    with open("data/cleaned_20news.csv", "r") as file:
+        line = file.readlines()[int(request.line_id)+1]
+    text = line.split(",")[0]
+    actual_label_class = line.split(",")[1]
+    actual_label = line.split(",")[2]
+    logging.info(f"Actual class is:{actual_label}({actual_label_class})")
+    requests.post("http://localhost:8000/xai/lime", json={"text": text})
+
+    if request.useSummaryAlso == True:
+        logging.info("------------------------------------------------------------")
+        with open("data/summaries_20news_lsa.json", "r") as file:
+            summary_dict = json.load(file)
+            text = summary_dict[actual_label_class]
+        requests.post("http://localhost:8000/xai/lime", json={"text": text})
+        
+    # print(line)
+    # print(request)
+    # return {"test":"test"}
+
+# @app.post("/xai/shap")
+# def explain_with_shap(request: TextRequest):
+#     model, vectorizer, class_names = load_saved_model()
+#     shap_values,a , b = explain_prediction_shap([request.text], model, vectorizer, class_names, 10000)
+#     if shap_values is None:
+#         raise HTTPException(status_code=500, detail="SHAP explanation failed.")
+#     return {
+#         "shap_values": shap_values.values.tolist(),
+#         "base_values": shap_values.base_values.tolist(),
+#         "data": shap_values.data.tolist()
+#     }

@@ -90,9 +90,9 @@ def explain_classification_decision_with_ollama(text, predicted_class_index, pre
             - talk.politics.misc
             - talk.religion.misc
 
-            For the text: 
+         Stemmed Input Text: 
             """ + text +"""
-                Explain the classification decision in very short
+                Explain the classification decision why the class was chosen
             """
     response = requests.post(
     'http://localhost:11434/api/generate',
