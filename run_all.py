@@ -161,18 +161,18 @@ def main():
 
     y_test_whole = np.load ("/data/20news/test_labels_5000.npy")
     print (f"test_labels_5000.npy : {y_test_whole.shape}")
-    y_test_sumy = np.load ("/data/20news/test_labels_summaries_lsa.npy")
+    y_test_sumy = np.load ("/data/labels/test_labels_summaries_lsa.npy")
     print (f"test_labels_summaries_lsa.npy : {y_test_sumy.shape}")
-    y_test_llm = np.load ("/data/20news/test_labels_summaries_llm.npy")
+    y_test_llm = np.load ("/data/labels/test_labels_summaries_llm.npy")
     print (f"test_labels_summaries_llm.npy : {y_test_llm.shape}")
     
     print ("")
 
     y_train_whole = np.load ("/data/20news/train_labels_5000.npy")
     print (f"train_labels_5000.npy : {y_train_whole.shape}")
-    y_train_sumy = np.load ("/data/20news/train_labels_summaries_lsa.npy")
+    y_train_sumy = np.load ("/data/labels/train_labels_summaries_lsa.npy")
     print (f"train_labels_summaries_lsa.npy : {y_train_sumy.shape}")
-    y_train_llm = np.load ("/data/20news/train_labels_summaries_llm.npy")
+    y_train_llm = np.load ("/data/labels/train_labels_summaries_llm.npy")
     print (f"train_labels_summaries_llm.npy : {y_train_llm.shape}")
 
 
