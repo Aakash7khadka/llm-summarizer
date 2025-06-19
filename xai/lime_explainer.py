@@ -99,7 +99,8 @@ def explain_classification_decision_with_ollama(text, predicted_class_index, pre
     json={
         "model": "gemma3:1b",
         "prompt": prompt,
-        "stream": False  # Set to True for streamed response
+        "stream": False,  # Set to True for streamed response
+        "context":[]
     }
     )
 
@@ -175,7 +176,8 @@ def ollamaprediction_comparison_with_limeexplanation(text, ollama_explanation, e
             "model": "gemma3:1b",
             "prompt": lime_prompt,
             "stream": False,
-            "temperature": 0.2
+            "temperature": 0.2,
+            "context": []
         }
     )
     logging.info("Ollama explanation with LIME values and its own classification decision:")

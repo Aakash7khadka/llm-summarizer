@@ -6,6 +6,8 @@ from pydantic import BaseModel
 import requests
 import pickle
 import json
+from sklearn.pipeline import make_pipeline
+
 
 
 def load_saved_model(model_path="../models/final_model.joblib") -> Tuple:
@@ -67,6 +69,24 @@ def get_summary_text_by_lineid(line_id):
         text = summary_dict[line_id]
     return text
 
-import os 
-print(os.getcwd())
-load_saved_vectorizer(vectorizer_path="vectorization/tfidf_vectorizer_full.pkl")
+def collect_incorrect_classifications():
+    model, class_names = load_saved_model("models/mlp_tfidf_whole.joblib")
+    vectorizer = load_saved_vectorizer(vectorizer_path="vectorization/tfidf_vectorizer_full.pkl")
+    with open("data/cleaned_20news.csv", "r") as file:
+        lines = file.readlines()[1:1000]
+    for i, line in enumerate(lines):
+        text = line.split(",")[0]
+        actual_label_class = line.split(",")[1]
+        actual_label = line.split(",")[2]
+        transformed_text = vectorizer.transform([text])
+        a= str(model.predict(transformed_text)[0]).strip()
+        b= str(actual_label_class.strip())
+        if(a != b):
+            print(f">>{i+1}")
+            print("Predicted: "+str(model.predict(transformed_text)[0]))
+            print("Actual: "+actual_label_class)
+      
+
+
+
+# collect_incorrect_classifications()
