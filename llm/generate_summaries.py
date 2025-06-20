@@ -173,12 +173,6 @@ def generate_and_save_summaries_faster(
     logging.info(f"✅ Saved {len(lsa_summaries)} LSA summaries → {lsa_json}")
 
 if __name__ == "__main__":
-    # Add your batch number here
-    # Amr: batch_no = 0
-    # Pedram: batch_no = 1
-    # Karthi: batch_no = 2
-    # Aakash: batch_no = 3
-    # Max: batch_no = 4
     generate_and_save_summaries_faster(
         input_csv="data/cleaned_agnews_light.csv",
         llm_json=f"data/summaries_agnews_llm.json",

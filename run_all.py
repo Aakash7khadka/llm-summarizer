@@ -23,7 +23,11 @@ from vectorization.vectorize_save import (
     vectorize_lsa_summary,
     vectorize_agnews
 )
+
 from vectorization.preprocessing import prepare_dataframe
+from llm.generate_summaries import generate_and_save_summaries_faster
+
+LOAD_SUMMARIES = True
 
 # from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
 
@@ -51,16 +55,33 @@ def main():
     logging.info("🚀 Starting model training pipeline...")
 
     df_20news = pd.read_csv("data/cleaned_20news_light.csv")  # Or load_cleaned_20news()
+    # Load ag_news dataset
+    df_agnews = pd.read_csv("data/cleaned_agnews_light.csv")
+    
+    # Change LOAD_SUMMARIES to False if you want to generate summaries
+    # This creates summaries and saves them to JSON files inside the data folder
+    if not LOAD_SUMMARIES:
+        # Create summaries for agnews dataset
+        generate_and_save_summaries_faster(
+            input_csv="data/cleaned_agnews_light.csv",
+            llm_json=f"data/summaries_agnews_llm.json",
+            lsa_json=f"data/summaries_agnews_lsa.json")
+
+        # Create summaries for 20news dataset
+        generate_and_save_summaries_faster(
+            input_csv="data/cleaned_20news_light.csv",
+            llm_json=f"data/summaries_20news_llm.json",
+            lsa_json=f"data/summaries_20news_lsa.json")
+
+
     # Load summaries from JSON files
     with open('data/summaries_20news_llm.json', 'r',
-              encoding='utf-8') as f:  # Have to fifgure out how are we importing the summaries
+            encoding='utf-8') as f:  # Have to fifgure out how are we importing the summaries
         summaries_20news_llm_dict = json.load(f)
 
     with open('data/summaries_20news_lsa.json', 'r', encoding='utf-8') as f:
         summaries_20news_lsa_dict = json.load(f)
 
-    # Load ag_news dataset
-    df_agnews = pd.read_csv("data/cleaned_agnews_light.csv")
 
     # Load summaries from JSON files
     with open('data/summaries_agnews_llm.json', 'r', encoding='utf-8') as f:
