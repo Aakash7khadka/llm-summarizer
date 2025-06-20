@@ -5,8 +5,8 @@ from math import floor
 import pandas as pd
 from tqdm import tqdm
 from typing import Optional
-from ollama_client import generate_llm_summary
-from lsa_summarizer import generate_lsa_summary
+from llm.lsa_summarizer import generate_lsa_summary
+from llm.ollama_client import generate_llm_summary
 
 import nltk
 nltk.download('punkt_tab')
