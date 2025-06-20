@@ -7,7 +7,7 @@ from scipy.sparse import load_npz
 
 # from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
 from vectorization.vectorizers import vectorize_tfidf
-from models.trainers import train_model
+from models.trainers import train_model, save_model
 from evaluation.metrics import evaluate_model, plot_confusion_matrix
 from models.training import training_process, testing_process
 
@@ -293,7 +293,6 @@ def main():
     berth_train_test_data_llm = [None, None, X_berth_ag_llm, y_ag_llm]
     berth_train_test_data_sumy = [None, None, X_berth_ag_sumy, y_ag_sumy]
 
-        
     folder_path = "./models/"
     joblib_files = []
     for file in os.listdir(folder_path):
