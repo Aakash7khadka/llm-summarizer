@@ -1,7 +1,12 @@
-# Adjusted README content with improved formatting and clearer explanation
 
-adjusted_readme = """
 # 🧠 LLM Summary-Based Document Classification
+
+## 👨‍💻 ATiML Semester Project — Group 3
+
+**Team Members**:  
+Aakash Khadka, Mohammadamin Madani, Karthikeyan Suresh, Amr Zayed, Max Neubaer
+
+
 
 This project investigates whether LLM-generated summaries (via Gemma 2B using Ollama) can effectively replace full-text document representations for classification tasks. We compare four different approaches to representing documents:
 
@@ -13,6 +18,61 @@ This project investigates whether LLM-generated summaries (via Gemma 2B using Ol
 Datasets used:
 - **20 Newsgroups** (mandatory)
 - **AG News** (used for few-shot/zero-shot experiments)
+
+
+---
+
+## 🛠️ Setup Instructions
+
+1. **Clone the project** and open a terminal in the **project root directory**.
+
+2. **Create a Virtual Environment**:
+
+    ```bash
+    python -m venv venv
+    ```
+
+3. **Activate the Virtual Environment**:  
+    - On **Windows**:
+
+        ```bash
+        venv\Scripts\activate
+        ```
+
+    - On **macOS/Linux**:
+
+        ```bash
+        source venv/bin/activate
+        ```
+
+4. **Install the Required Packages**:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. **Run the Project**:  
+    From the root of the project directory (`llm-summarizer`), run:
+
+    ```bash
+    python run_all.py
+    ```
+
+6. **Get Explanations via Ollama API**:  
+    Send a POST request to the following endpoint:
+
+    ```
+    http://localhost:8000/xai/lime
+    ```
+
+    With the following JSON body:
+
+    ```json
+    {
+      "line_id": "320",
+      "useSummaryAlso": false
+    }
+    ```
 
 ---
 
