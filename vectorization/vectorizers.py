@@ -11,82 +11,98 @@ logging.basicConfig(
 )
 
 
-def vectorize_tfidf(corpus: List[str], max_features: int = 5000) -> Tuple:
+def vectorize_tfidf(train_corpus: List[str], test_corpus: List[str], max_features: int = 5000) -> Tuple:
     """
     Vectorize text using TF-IDF.
 
     Args:
-        corpus (List[str]): List of input text strings.
+        train_corpus (List[str]): List of input train text strings.
+        test_corpus (List[str]): List of input test text strings.
         max_features (int): Maximum number of features to keep.
 
     Returns:
         Tuple:
-            - vectors: TF-IDF sparse matrix
+            - Train vector
+            - Test vector
             - vectorizer: Fitted TfidfVectorizer instance
     """
     logging.info("🔢 Vectorizing with TF-IDF...")
     vectorizer = TfidfVectorizer(max_features=max_features)
-    vectors = vectorizer.fit_transform(corpus)
-    logging.info(f"TF-IDF shape: {vectors.shape}")
-    return vectors, vectorizer
+    train_vectors = vectorizer.fit_transform(train_corpus)
+    test_vectors = vectorizer.transform(test_corpus)
+    return train_vectors, test_vectors, vectorizer
 
 
-def vectorize_doc2vec(
-    corpus: List[str],
+def train_doc2vec(
+    train_docs: List[str],
     vector_size: int = 100,
     epochs: int = 40,
-    min_count: int = 1
-) -> Tuple:
+    min_count: int = 2
+) -> Doc2Vec:
     """
     Vectorize text using Doc2Vec.
 
     Args:
-        corpus (List[str]): List of input documents.
+        train_docs (List[str]): List of input train text strings.
         vector_size (int): Dimensionality of the vectors.
         epochs (int): Number of training iterations.
         min_count (int): Minimum word frequency threshold.
 
     Returns:
-        Tuple:
-            - vectors: List of document vectors
-            - model: Trained Doc2Vec model
+        - model: A Doc2Vec model
     """
-    logging.info("📘 Vectorizing with Doc2Vec...")
-    tagged_docs = [TaggedDocument(words=doc.split(), tags=[i])
-                   for i, doc in enumerate(corpus)]
+    logging.info("📘 Doc2Vec Model...")
+    tagged_docs = [TaggedDocument(words=doc.split(), tags=[str(i)])
+                   for i, doc in enumerate(train_docs)]
 
     model = Doc2Vec(
         vector_size=vector_size,
         window=5,
         min_count=min_count,
-        workers=4,
+        workers=3,
         epochs=epochs
     )
     model.build_vocab(tagged_docs)
     model.train(tagged_docs, total_examples=model.corpus_count,
                 epochs=model.epochs)
+    return model
 
-    vectors = [model.infer_vector(doc.words) for doc in tagged_docs]
+
+def vectorize_doc2vec (model, docs: List[str]) -> List[List[float]]:
+    """
+        Generate document vectors using a trained Doc2Vec model.
+
+        Args:
+            model (Doc2Vec): A trained Gensim Doc2Vec model.
+            docs (List[str]): List of raw text documents to be vectorized.
+
+        Returns:
+            List[List[float]]: List of document vectors, where each vector corresponds to a document.
+    """
+    vectors = [model.infer_vector(doc.split()) for doc in docs]
     logging.info(
-        f"Doc2Vec completed: {len(vectors)} vectors of size {vector_size}")
-    return vectors, model
+        f"Doc2Vec completed: {len(vectors)} vectors of size {model.vector_size}")
+    return vectors
 
 
-def vectorize_bert(corpus: List[str], model_name: str = 'all-MiniLM-L6-v2') -> Tuple:
+def vectorize_bert(train_corpus: List[str], test_corpus: List[str], model_name: str = 'all-MiniLM-L6-v2') -> Tuple:
     """
     Vectorize text using Sentence-BERT.
 
     Args:
-        corpus (List[str]): List of input text strings.
+        train_corpus (List[str]): List of input train text strings.
+        test_corpus (List[str]): List of input test text strings.
         model_name (str): Name of HuggingFace model to load.
 
     Returns:
         Tuple:
-            - vectors: List of dense embeddings
+            - Train vector
+            -Test vector
             - model: Loaded SentenceTransformer
     """
     logging.info(f"🤖 Vectorizing with Sentence-BERT model: {model_name}")
     model = SentenceTransformer(model_name)
-    vectors = model.encode(corpus, show_progress_bar=True)
-    logging.info(f"BERT embeddings generated: {len(vectors)} vectors")
-    return vectors, model
+    train_vectors = model.encode(train_corpus, show_progress_bar=True)
+    test_vectors = model.encode(test_corpus, show_progress_bar=True)
+    logging.info(f"BERT embeddings generated: {len(train_vectors)} vectors")
+    return train_vectors, test_vectors, model

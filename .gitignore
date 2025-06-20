@@ -23,12 +23,20 @@ venv/
 *.xlsx
 *.db
 *.sqlite3
+*.npy
+*.npz
+*.model
+*.savetensors
 outputs/
 *.sav
 *.pkl
 *.h5
 *.pt
 *.ckpt
+
+data/20news/bert_sentence_transformer_model_full
+data/20news/bert_sentence_transformer_model_llmsumary
+data/20news/bert_sentence_transformer_model_lsasumary
 
 # LLM-generated artifacts
 *.tmp

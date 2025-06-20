@@ -55,7 +55,7 @@ def train_model(X_train, y_train, model_type: str = "svm", **kwargs) -> Classifi
     logging.info(f"✅ {model_type.upper()} training complete")
     return model
 
-
+'''
 def save_model(model, vectorizer, model_path="models/final_model.joblib", vectorizer_path="models/final_vectorizer.joblib"):
     """
     Save trained model and vectorizer to disk.
@@ -64,7 +64,15 @@ def save_model(model, vectorizer, model_path="models/final_model.joblib", vector
     joblib.dump(vectorizer, vectorizer_path)
     logging.info(f"💾 Model saved to {model_path}")
     logging.info(f"💾 Vectorizer saved to {vectorizer_path}")
+'''
 
+def save_model(model, model_path="models/final_model.joblib", vectorizer_path="models/final_vectorizer.joblib"):
+    """
+    Save trained model to disk.
+    """
+    joblib.dump(model, model_path)
+    logging.info(f"💾 Model saved to {model_path}")
+    #logging.info(f"💾 Vectorizer saved to {vectorizer_path}")
 
 def load_saved_model(model_path="models/final_model.joblib", vectorizer_path="models/final_vectorizer.joblib") -> Tuple:
     """
