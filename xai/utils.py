@@ -7,6 +7,8 @@ import requests
 import pickle
 import json
 from sklearn.pipeline import make_pipeline
+import warnings
+from sklearn.exceptions import InconsistentVersionWarning
 
 
 
@@ -37,8 +39,10 @@ def load_saved_vectorizer(vectorizer_path) -> Tuple:
         vectorizer: Corresponding vectorizer
         class_names: List of string class names
     """
-    # with open(vectorizer_path, 'rb') as file:
-    #     vectorizer = pickle.load(file)
+
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", InconsistentVersionWarning)
     vectorizer = joblib.load(vectorizer_path)
    
     logging.info("📂 Loaded vectorizer from disk")
@@ -58,7 +62,7 @@ def get_data_by_lineid(line_id):
     text = line.split(",")[0]
     actual_label_class = line.split(",")[1]
     actual_label = line.split(",")[2]
-    logging.info(f"Actual class is:{actual_label_class}({actual_label.replace("\n","")})")
+    logging.info(f"➡️ Actual class is:{actual_label_class}({actual_label.replace("\n","")})")
     return text, actual_label_class, actual_label
 
 def get_summary_text_by_lineid(line_id):

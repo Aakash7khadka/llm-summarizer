@@ -50,7 +50,7 @@ def explain_prediction_lime(text: str, model, vectorizer, class_names: list, num
         )
 
         predicted_class = pipeline.predict([text])[0]
-        logging.info(f"Predicted class:{predicted_class}({class_names[predicted_class]})")
+        logging.info(f"➡️ Predicted class:{predicted_class}({class_names[predicted_class]})")
         predicted_class_name = class_names[predicted_class]
 
         logging.info("✅ LIME explanation generated.")
@@ -107,7 +107,7 @@ def explain_classification_decision_with_ollama(text, predicted_class_index, pre
     # Print the generated response
 
     resp = response.json()["response"]
-    logging.info("Ollama Explanation about classification:")
+    logging.info("➡️ Ollama Explanation about classification:")
     logging.info(response.json()["response"])   
     return resp
 
@@ -180,6 +180,6 @@ def ollamaprediction_comparison_with_limeexplanation(text, ollama_explanation, e
             "context": []
         }
     )
-    logging.info("Ollama explanation with LIME values and its own classification decision:")
+    logging.info("➡️ Ollama explanation with LIME values and its own classification decision:")
     logging.info(response.json()["response"])
     return response.json()["response"]
