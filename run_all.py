@@ -126,74 +126,74 @@ def main():
 
     
 
-    X_berth_test_whole = np.load ("/data/20news/bert_test.npy")
+    X_berth_test_whole = np.load ("data/20news/bert_test.npy")
     print (f"bert_test.npy : {X_berth_test_whole.shape}")
-    X_berth_test_sumy = np.load ("/data/20news/test_bert_summaries_lsa.npy")
+    X_berth_test_sumy = np.load ("data/20news/test_bert_summaries_lsa.npy")
     print (f"test_bert_summaries_lsa.npy : {X_berth_test_sumy.shape}")
-    X_berth_test_llm = np.load ("/data/20news/test_bert_summaries.npy")
+    X_berth_test_llm = np.load ("data/20news/test_bert_summaries.npy")
     print (f"test_bert_summaries.npy : {X_berth_test_llm.shape}")
 
     print ("")
 
-    X_d2v_test_whole = np.load ("/data/20news/doc2vec_test_def.npy")
+    X_d2v_test_whole = np.load ("data/20news/doc2vec_test_def.npy")
     print (f"doc2vec_test_def.npy : {X_d2v_test_whole.shape}")
-    X_d2v_test_sumy = np.load ("/data/20news/test_doc2vec_summaries_lsa.npy")
+    X_d2v_test_sumy = np.load ("data/20news/test_doc2vec_summaries_lsa.npy")
     print (f"test_doc2vec_summaries_lsa.npy : {X_d2v_test_sumy.shape}")
-    X_d2v_test_llm = np.load ("/data/20news/test_doc2vec_summaries_def.npy")
+    X_d2v_test_llm = np.load ("data/20news/test_doc2vec_summaries_def.npy")
     print (f"test_doc2vec_summaries_def.npy : {X_d2v_test_llm.shape}")
 
     print ("")
 
-    X_tfidf_test_whole = load_npz ("/data/20news/tfidf_test_5000.npz")
+    X_tfidf_test_whole = load_npz ("data/20news/tfidf_test_5000.npz")
     print (f"tfidf_test_5000.npy : {X_tfidf_test_whole.shape}")
-    X_tfidf_test_sumy = load_npz ("/data/20news/test_summaries_tfidf_lsa.npz")
+    X_tfidf_test_sumy = load_npz ("data/20news/test_summaries_tfidf_lsa.npz")
     print (f"test_summaries_tfidf_lsa.npz : {X_tfidf_test_sumy.shape}")
-    X_tfidf_test_llm = load_npz ("/data/20news/test_summaries_tfidf_5000.npz")
+    X_tfidf_test_llm = load_npz ("data/20news/test_summaries_tfidf_5000.npz")
     print (f"test_summaries_tfidf_5000.npz : {X_tfidf_test_llm.shape}")
 
     print ("")
     
-    X_berth_train_whole = np.load ("/data/20news/bert_train.npy")
+    X_berth_train_whole = np.load ("data/20news/bert_train.npy")
     print (f"bert_train.npy : {X_berth_train_whole.shape}")
-    X_berth_train_sumy = np.load ("/data/20news/train_bert_summaries_lsa.npy")
+    X_berth_train_sumy = np.load ("data/20news/train_bert_summaries_lsa.npy")
     print (f"train_bert_summaries_lsa.npy : {X_berth_train_sumy.shape}")
-    X_berth_train_llm = np.load ("/data/20news/train_bert_summaries.npy")
+    X_berth_train_llm = np.load ("data/20news/train_bert_summaries.npy")
     print (f"train_bert_summaries.npy : {X_berth_train_llm.shape}")
 
     print ("")
 
-    X_d2v_train_whole = np.load ("/data/20news/doc2vec_train_def.npy")
+    X_d2v_train_whole = np.load ("data/20news/doc2vec_train_def.npy")
     print (f"doc2vec_train_def.npy : {X_d2v_train_whole.shape}")
-    X_d2v_train_sumy = np.load ("/data/20news/train_doc2vec_summaries_lsa.npy")
+    X_d2v_train_sumy = np.load ("data/20news/train_doc2vec_summaries_lsa.npy")
     print (f"train_doc2vec_summaries_lsa.npy : {X_d2v_train_sumy.shape}")
-    X_d2v_train_llm = np.load ("/data/20news/train_doc2vec_summaries_def.npy")
+    X_d2v_train_llm = np.load ("data/20news/train_doc2vec_summaries_def.npy")
     print (f"train_doc2vec_summaries_def.npy : {X_d2v_train_llm.shape}")
     
     print ("")
 
-    X_tfidf_train_whole = load_npz ("/data/20news/tfidf_train_5000.npz")
+    X_tfidf_train_whole = load_npz ("data/20news/tfidf_train_5000.npz")
     print (f"tfidf_train_5000.npz : {X_tfidf_train_whole.shape}")
-    X_tfidf_train_sumy = load_npz ("/data/20news/train_summaries_tfidf_lsa.npz")
+    X_tfidf_train_sumy = load_npz ("data/20news/train_summaries_tfidf_lsa.npz")
     print (f"train_summaries_tfidf_lsa.npz : {X_tfidf_train_sumy.shape}")
-    X_tfidf_train_llm = load_npz ("/data/20news/train_summaries_tfidf_5000.npz")
+    X_tfidf_train_llm = load_npz ("data/20news/train_summaries_tfidf_5000.npz")
     print (f"train_summaries_tfidf_5000.npy : {X_tfidf_train_llm.shape}")
 
     print ("")
 
-    y_test_whole = np.load ("/data/20news/test_labels_5000.npy")
+    y_test_whole = np.load ("data/20news/test_labels_5000.npy")
     print (f"test_labels_5000.npy : {y_test_whole.shape}")
-    y_test_sumy = np.load ("/data/labels/test_labels_summaries_lsa.npy")
+    y_test_sumy = np.load ("data/labels/test_labels_summaries_lsa.npy")
     print (f"test_labels_summaries_lsa.npy : {y_test_sumy.shape}")
-    y_test_llm = np.load ("/data/labels/test_labels_summaries_llm.npy")
+    y_test_llm = np.load ("data/labels/test_labels_summaries_llm.npy")
     print (f"test_labels_summaries_llm.npy : {y_test_llm.shape}")
     
     print ("")
 
-    y_train_whole = np.load ("/data/20news/train_labels_5000.npy")
+    y_train_whole = np.load ("data/20news/train_labels_5000.npy")
     print (f"train_labels_5000.npy : {y_train_whole.shape}")
-    y_train_sumy = np.load ("/data/labels/train_labels_summaries_lsa.npy")
+    y_train_sumy = np.load ("data/labels/train_labels_summaries_lsa.npy")
     print (f"train_labels_summaries_lsa.npy : {y_train_sumy.shape}")
-    y_train_llm = np.load ("/data/labels/train_labels_summaries_llm.npy")
+    y_train_llm = np.load ("data/labels/train_labels_summaries_llm.npy")
     print (f"train_labels_summaries_llm.npy : {y_train_llm.shape}")
 
 
@@ -266,38 +266,38 @@ def main():
 
     
 
-    X_berth_ag_whole = np.load ("/data/ag_news/bert_agnews_full.npy")
+    X_berth_ag_whole = np.load ("data/ag_news/bert_agnews_full.npy")
     print (f"ag_bert.npy : {X_berth_ag_whole.shape}")
-    X_berth_ag_sumy = np.load ("/data/ag_news/bert_agnews_lsa.npy")
+    X_berth_ag_sumy = np.load ("data/ag_news/bert_agnews_lsa.npy")
     print (f"ag_bert_summaries_lsa.npy : {X_berth_ag_sumy.shape}")
-    X_berth_ag_llm = np.load ("/data/ag_news/bert_agnews_llm.npy")
+    X_berth_ag_llm = np.load ("data/ag_news/bert_agnews_llm.npy")
     print (f"ag_bert_summaries.npy : {X_berth_ag_llm.shape}")
 
     print ("")
 
-    X_d2v_ag_whole = np.load ("/data/ag_news/doc2vec_agnews_full.npy")
+    X_d2v_ag_whole = np.load ("data/ag_news/doc2vec_agnews_full.npy")
     print (f"ag_doc2vec.npy : {X_d2v_ag_whole.shape}")
-    X_d2v_ag_sumy = np.load ("/data/ag_news/doc2vec_agnews_lsa.npy")
+    X_d2v_ag_sumy = np.load ("data/ag_news/doc2vec_agnews_lsa.npy")
     print (f"ag_doc2vec_summaries_lsa.npy : {X_d2v_ag_sumy.shape}")
-    X_d2v_ag_llm = np.load ("/data/ag_news/doc2vec_agnews_llm.npy")
+    X_d2v_ag_llm = np.load ("data/ag_news/doc2vec_agnews_llm.npy")
     print (f"ag_doc2vec_summaries_def.npy : {X_d2v_ag_llm.shape}")
 
     print ("")
 
-    X_tfidf_ag_whole = load_npz ("/data/ag_news/tfidf_agnews_flull.npz")
+    X_tfidf_ag_whole = load_npz ("data/ag_news/tfidf_agnews_flull.npz")
     print (f"ag_tfidf.npy : {X_tfidf_ag_whole.shape}")
-    X_tfidf_ag_sumy = load_npz ("/data/ag_news/tfidf_agnews_lsa.npz")
+    X_tfidf_ag_sumy = load_npz ("data/ag_news/tfidf_agnews_lsa.npz")
     print (f"ag_summaries_tfidf_lsa.npz : {X_tfidf_ag_sumy.shape}")
-    X_tfidf_ag_llm = load_npz ("/data/ag_news/tfidf_agnews_llm.npz")
+    X_tfidf_ag_llm = load_npz ("data/ag_news/tfidf_agnews_llm.npz")
     print (f"ag_summaries_tfidf_5000.npz : {X_tfidf_ag_llm.shape}")
 
     print ("")
 
-    y_ag_whole = np.load ("/data/ag_news/labels_agnews_full.npy")
+    y_ag_whole = np.load ("data/ag_news/labels_agnews_full.npy")
     print (f"test_labels_5000.npy : {y_ag_whole.shape}")
-    y_ag_sumy = np.load ("/data/ag_news/labels_summaries_lsa_agnews.npy")
+    y_ag_sumy = np.load ("data/ag_news/labels_summaries_lsa_agnews.npy")
     print (f"test_labels_summaries_lsa.npy : {y_ag_sumy.shape}")
-    y_ag_llm = np.load ("/data/ag_news/labels_summaries_llm_agnews.npy")
+    y_ag_llm = np.load ("data/ag_news/labels_summaries_llm_agnews.npy")
     print (f"test_labels_summaries_llm.npy : {y_ag_llm.shape}")
     
     print ("")
