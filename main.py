@@ -81,8 +81,8 @@ def summarize_and_vectorize_endpoint(request: TextRequest):
 @app.post("/xai/lime")
 def explain_with_lime(request: RequestDataLime):
     text, actual_label_class, actual_label = get_data_by_lineid(request.line_id)
-    model, class_names = load_saved_model(model_path='models/mlp_tfidf_whole.joblib')
-    vectorizer = load_saved_vectorizer(vectorizer_path="vectorization/tfidf_vectorizer_full.pkl")
+    model, class_names = load_saved_model(model_path='models/final_mlp_tfidf_whole.joblib')
+    vectorizer = load_saved_vectorizer(vectorizer_path="vectorization/final_tfidf_vectorizer_full.pkl")
     explanation, predicted_class, predicted_class_name = explain_prediction_lime(
         text, model, vectorizer, class_names, 10000)
     llm_reasoning = explain_classification_decision_with_ollama(text, predicted_class, predicted_class_name)
@@ -92,8 +92,8 @@ def explain_with_lime(request: RequestDataLime):
         logging.info("------------------------------------------------------------")
 
         summary_text = get_summary_text_by_lineid(request.line_id)
-        model, class_names = load_saved_model(model_path='models/mlp_tfidf_sumy.joblib')
-        vectorizer = load_saved_vectorizer(vectorizer_path="vectorization/tfidf_vectorizer_full.pkl")
+        model, class_names = load_saved_model(model_path='models/final_mlp_tfidf_sumy.joblib')
+        vectorizer = load_saved_vectorizer(vectorizer_path="vectorization/final_tfidf_vectorizer_sum_lsa.pkl")
         explanation, predicted_class, predicted_class_name = explain_prediction_lime(
             summary_text, model, vectorizer, class_names, 10000)
         llm_reasoning = explain_classification_decision_with_ollama(summary_text, predicted_class, predicted_class_name)
