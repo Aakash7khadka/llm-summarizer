@@ -6,6 +6,8 @@ from scipy import sparse
 from gensim.models.doc2vec import Doc2Vec
 from sentence_transformers import SentenceTransformer
 
+NUM_FEATURES = 5000
+
 
 def vectorize_full_dataset(train_texts, test_texts, train_labels, test_labels):
     """"
@@ -44,7 +46,7 @@ def vectorize_llm_summary(train_summaries_llm, test_summaries_llm, train_labels_
 
     # 1) TF-IDF
     train_tfidf_sum, test_tfidf_sum, tfidf_vectorizer_sum = vectorize_tfidf(train_summaries_llm,
-                                                                              test_summaries_llm, max_features=5000)
+                                                                              test_summaries_llm, max_features=NUM_FEATURES)
 
     # 2) Doc2Vec
     doc2vec_model_sum = train_doc2vec(train_summaries_llm)
@@ -78,7 +80,7 @@ def vectorize_lsa_summary(train_summaries_lsa, test_summaries_lsa, train_labels_
     # TF-IDF
     train_tfidf_sum_lsa, test_tfidf_sum_lsa, tfidf_vectorizer_sum_lsa = vectorize_tfidf(train_summaries_lsa,
                                                                                         test_summaries_lsa,
-                                                                                        max_features=5000)
+                                                                                        max_features=NUM_FEATURES)
     # Doc2Vec
     doc2vec_model_sum_lsa = train_doc2vec(train_summaries_lsa)
     train_doc2vec_sum_lsa = vectorize_doc2vec(doc2vec_model_sum_lsa, train_summaries_lsa)

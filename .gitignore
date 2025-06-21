@@ -38,6 +38,8 @@ data/20news/bert_sentence_transformer_model_full
 data/20news/bert_sentence_transformer_model_llmsumary
 data/20news/bert_sentence_transformer_model_lsasumary
 
+*.joblib
+
 # LLM-generated artifacts
 *.tmp
 summaries_llm.json

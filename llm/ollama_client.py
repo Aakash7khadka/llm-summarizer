@@ -32,7 +32,7 @@ def generate_llm_summary(text: str, doc_id: str, model: str = "gemma3:1b", n_sen
                 "prompt": prompt,
                 "stream": False
             },
-            timeout=15
+            timeout=50
         )
 
         if response.ok:

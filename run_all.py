@@ -28,6 +28,7 @@ from vectorization.preprocessing import prepare_dataframe
 from llm.generate_summaries import generate_and_save_summaries_faster
 
 LOAD_SUMMARIES = True
+USE_LIGHT_VERSION = True
 
 # from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
 
@@ -266,38 +267,38 @@ def main():
 
     
 
-    X_berth_ag_whole = np.load ("data/ag_news/bert_agnews_full.npy")
+    X_berth_ag_whole = np.load ("data/agnews/bert_agnews_full.npy")
     print (f"ag_bert.npy : {X_berth_ag_whole.shape}")
-    X_berth_ag_sumy = np.load ("data/ag_news/bert_agnews_lsa.npy")
+    X_berth_ag_sumy = np.load ("data/agnews/bert_agnews_lsa.npy")
     print (f"ag_bert_summaries_lsa.npy : {X_berth_ag_sumy.shape}")
-    X_berth_ag_llm = np.load ("data/ag_news/bert_agnews_llm.npy")
+    X_berth_ag_llm = np.load ("data/agnews/bert_agnews_llm.npy")
     print (f"ag_bert_summaries.npy : {X_berth_ag_llm.shape}")
 
     print ("")
 
-    X_d2v_ag_whole = np.load ("data/ag_news/doc2vec_agnews_full.npy")
+    X_d2v_ag_whole = np.load ("data/agnews/doc2vec_agnews_full.npy")
     print (f"ag_doc2vec.npy : {X_d2v_ag_whole.shape}")
-    X_d2v_ag_sumy = np.load ("data/ag_news/doc2vec_agnews_lsa.npy")
+    X_d2v_ag_sumy = np.load ("data/agnews/doc2vec_agnews_lsa.npy")
     print (f"ag_doc2vec_summaries_lsa.npy : {X_d2v_ag_sumy.shape}")
-    X_d2v_ag_llm = np.load ("data/ag_news/doc2vec_agnews_llm.npy")
+    X_d2v_ag_llm = np.load ("data/agnews/doc2vec_agnews_llm.npy")
     print (f"ag_doc2vec_summaries_def.npy : {X_d2v_ag_llm.shape}")
 
     print ("")
 
-    X_tfidf_ag_whole = load_npz ("data/ag_news/tfidf_agnews_flull.npz")
+    X_tfidf_ag_whole = load_npz ("data/agnews/tfidf_agnews_flull.npz")
     print (f"ag_tfidf.npy : {X_tfidf_ag_whole.shape}")
-    X_tfidf_ag_sumy = load_npz ("data/ag_news/tfidf_agnews_lsa.npz")
+    X_tfidf_ag_sumy = load_npz ("data/agnews/tfidf_agnews_lsa.npz")
     print (f"ag_summaries_tfidf_lsa.npz : {X_tfidf_ag_sumy.shape}")
-    X_tfidf_ag_llm = load_npz ("data/ag_news/tfidf_agnews_llm.npz")
+    X_tfidf_ag_llm = load_npz ("data/agnews/tfidf_agnews_llm.npz")
     print (f"ag_summaries_tfidf_5000.npz : {X_tfidf_ag_llm.shape}")
 
     print ("")
 
-    y_ag_whole = np.load ("data/ag_news/labels_agnews_full.npy")
+    y_ag_whole = np.load ("data/agnews/labels_agnews_full.npy")
     print (f"test_labels_5000.npy : {y_ag_whole.shape}")
-    y_ag_sumy = np.load ("data/ag_news/labels_summaries_lsa_agnews.npy")
+    y_ag_sumy = np.load ("data/agnews/labels_summaries_lsa_agnews.npy")
     print (f"test_labels_summaries_lsa.npy : {y_ag_sumy.shape}")
-    y_ag_llm = np.load ("data/ag_news/labels_summaries_llm_agnews.npy")
+    y_ag_llm = np.load ("data/agnews/labels_summaries_llm_agnews.npy")
     print (f"test_labels_summaries_llm.npy : {y_ag_llm.shape}")
     
     print ("")
@@ -329,6 +330,36 @@ def main():
                       doc2vec_train_test_data_whole, doc2vec_train_test_data_llm, doc2vec_train_test_data_sumy,
                       berth_train_test_data_whole, berth_train_test_data_llm, berth_train_test_data_sumy, model_paths=joblib_files)
     
+    if USE_LIGHT_VERSION:
+        os.remove ( "models/svc_tfidf_whole.joblib")
+        os.remove ( "models/svc_tfidf_llm.joblib")
+        os.remove ( "models/svc_tfidf_sumy.joblib")
+        os.remove ( "models/svc_doc2vec_whole.joblib")
+        os.remove ( "models/svc_doc2vec_llm.joblib")
+        os.remove ( "models/svc_doc2vec_sumy.joblib")
+        os.remove ( "models/svc_berth_whole.joblib")
+        os.remove ( "models/svc_berth_llm.joblib")
+        os.remove ( "models/svc_berth_sumy.joblib")
+
+        os.remove ( "models/mlp_tfidf_whole.joblib")
+        os.remove ( "models/mlp_tfidf_llm.joblib")
+        os.remove ( "models/mlp_tfidf_sumy.joblib")
+        os.remove ( "models/mlp_doc2vec_whole.joblib")
+        os.remove ( "models/mlp_doc2vec_llm.joblib")
+        os.remove ( "models/mlp_doc2vec_sumy.joblib")
+        os.remove ( "models/mlp_berth_whole.joblib")
+        os.remove ( "models/mlp_berth_llm.joblib")
+        os.remove ( "models/mlp_berth_sumy.joblib")
+
+        os.remove ( "models/rf_tfidf_whole.joblib")
+        os.remove ( "models/rf_tfidf_llm.joblib")
+        os.remove ( "models/rf_tfidf_sumy.joblib")
+        os.remove ( "models/rf_doc2vec_whole.joblib")
+        os.remove ( "models/rf_doc2vec_llm.joblib")
+        os.remove ( "models/rf_doc2vec_sumy.joblib")
+        os.remove ( "models/rf_berth_whole.joblib")
+        os.remove ( "models/rf_berth_llm.joblib")
+        os.remove ( "models/rf_berth_sumy.joblib")
     
     return 
 
