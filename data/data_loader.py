@@ -2,7 +2,7 @@ import logging
 import pandas as pd
 from sklearn.datasets import fetch_20newsgroups
 from datasets import load_dataset
-from text_cleaner import clean_text_light, clean_text_strict
+from data.text_cleaner import clean_text_light, clean_text_strict
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -22,7 +22,7 @@ def filter_dataframe(df: pd.DataFrame, text_column: str = 'text') -> pd.DataFram
     return df
 
 
-def load_and_clean_20newsgroups(save_path='data/cleaned_20news.csv', cleaning_mode='strict'):
+def load_and_clean_20newsgroups(save_path='data/cleaned_20news.csv', cleaning_mode='strict', light_version = False):
     logging.info("Loading 20 Newsgroups dataset...")
     raw = fetch_20newsgroups(subset='all', remove=(
         'headers', 'footers', 'quotes'))
@@ -33,12 +33,15 @@ def load_and_clean_20newsgroups(save_path='data/cleaned_20news.csv', cleaning_mo
         'label_name': [raw.target_names[i] for i in raw.target]
     })
     df = filter_dataframe(df)
+
+    if light_version: df = df.head(2300)
+
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     df.to_csv(save_path, index=False)
     logging.info(f"Saved cleaned 20 Newsgroups to: {save_path}")
 
 
-def load_and_clean_agnews(save_path='data/cleaned_agnews.csv', cleaning_mode='strict'):
+def load_and_clean_agnews(save_path='data/cleaned_agnews.csv', cleaning_mode='strict', light_version = False):
     logging.info("Loading AG News dataset...")
     dataset = load_dataset('ag_news', split='train')
     cleaner = clean_text_strict if cleaning_mode == 'strict' else clean_text_light
@@ -51,6 +54,9 @@ def load_and_clean_agnews(save_path='data/cleaned_agnews.csv', cleaning_mode='st
         'label_name': [label_names[i] for i in labels]
     })
     df = filter_dataframe(df)
+
+    if light_version: df = df.head(2300)
+
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     df.to_csv(save_path, index=False)
     logging.info(f"Saved cleaned AG News to: {save_path}")

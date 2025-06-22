@@ -4,6 +4,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
 from scipy.sparse import load_npz
+import json
+import pickle
+from scipy import sparse
 
 # from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
 from vectorization.vectorizers import vectorize_tfidf
@@ -23,17 +26,20 @@ from vectorization.vectorize_save import (
     vectorize_lsa_summary,
     vectorize_agnews
 )
-
+from vectorization.vectorizers import vectorize_tfidf
 from vectorization.preprocessing import prepare_dataframe
 from llm.generate_summaries import generate_and_save_summaries_faster
 
 LOAD_SUMMARIES = True
 USE_LIGHT_VERSION = True
 
-# from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
+#from data.data_loader import load_cleaned_20news  # Or load_cleaned_agnews
 
 from models.trainers import train_model, save_model
 from evaluation.metrics import evaluate_model, plot_confusion_matrix
+
+from llm.generate_summaries import generate_and_save_summaries_faster
+from data.data_loader import load_and_clean_20newsgroups, load_and_clean_agnews
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s | %(levelname)s | %(message)s')
@@ -54,6 +60,28 @@ def split_data(df, text_col='text', label_col='label', test_size=0.2, random_sta
 def main():
     # Load and split data
     logging.info("🚀 Starting model training pipeline...")
+
+    cleaning_mode = "light" if USE_LIGHT_VERSION else "strict"
+    cleaned_20news_path = f"data/cleaned_20news_{cleaning_mode}.csv"
+    cleaned_agnews_path = f"data/cleaned_agnews_{cleaning_mode}.csv"
+
+    logging.info("Cleaning raw datasets (%s mode)...", cleaning_mode)
+
+    df_20news = load_and_clean_20newsgroups(
+        save_path=cleaned_20news_path,
+        cleaning_mode=cleaning_mode,
+        light_version=USE_LIGHT_VERSION
+    )
+
+    df_agnews = load_and_clean_agnews(
+        save_path=cleaned_agnews_path,
+        cleaning_mode=cleaning_mode,
+        light_version=USE_LIGHT_VERSION
+    )
+
+    #logging.info("Cleaning complete: 20News (%d rows), AGNews (%d rows)",
+    #         len(df_20news), len(df_agnews))
+
 
     df_20news = pd.read_csv("data/cleaned_20news_light.csv")  # Or load_cleaned_20news()
     # Load ag_news dataset
