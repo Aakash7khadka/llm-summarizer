@@ -59,9 +59,11 @@ Datasets used:
     ```
     
 6. **Run this command to start the server for LIME**
+   '''
    uvicorn main:app --reload
+   '''
    
-7. **Get Explanations via Ollama API**:  
+8. **Get Explanations via Ollama API**:  
     Send a POST request to the following endpoint:
 
     ```
