@@ -74,8 +74,8 @@ def get_summary_text_by_lineid(line_id):
     return text
 
 def collect_incorrect_classifications():
-    model, class_names = load_saved_model("models/mlp_tfidf_whole.joblib")
-    vectorizer = load_saved_vectorizer(vectorizer_path="vectorization/tfidf_vectorizer_full.pkl")
+    model, class_names = load_saved_model("models/final_mlp_tfidf_whole.joblib")
+    vectorizer = load_saved_vectorizer(vectorizer_path="vectorization/final_tfidf_vectorizer_full.pkl")
     with open("data/cleaned_20news.csv", "r") as file:
         lines = file.readlines()[1:1000]
     for i, line in enumerate(lines):
@@ -93,4 +93,4 @@ def collect_incorrect_classifications():
 
 
 
-# collect_incorrect_classifications()
+collect_incorrect_classifications()
