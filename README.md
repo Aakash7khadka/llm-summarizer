@@ -57,8 +57,11 @@ Datasets used:
     ```bash
     python run_all.py
     ```
-
-6. **Get Explanations via Ollama API**:  
+    
+6. **Run this command to start the server for LIME**
+   uvicorn main:app --reload
+   
+7. **Get Explanations via Ollama API**:  
     Send a POST request to the following endpoint:
 
     ```
